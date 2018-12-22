@@ -11,6 +11,11 @@
             <div class="col-md-4 align-self-center">
                 <h1>NoirArt</h1>
                 <p>One for all, all for one. Share your design!</p>
+                {% if current_user.is_authenticated %}
+                <p>Hello,{{current_user.username}}!</p>
+                {% else %}
+                <p><a class="btn btn-success btn-lg" href="{{ url_for('auth.register') }}">Join Now</a></p>
+                {% endif %}
             </div>
         </div>
     </div>

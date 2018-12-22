@@ -4,9 +4,13 @@ import os
 import click
 from flask import Flask, render_template
 
+from noirart.blueprints.auth import auth_bp
 from noirart.blueprints.main import main_bp
-from noirart.extensions import bootstrap, db, mail, moment
+from noirart.blueprints.user import user_bp
+from noirart.extensions import bootstrap, db, mail, moment, login_manager
+from noirart.models import User  # 导入之后db才能识别到，create的时候才会自动建表
 from noirart.settings import config
+
 
 # 工厂模式创建flask实例，flask会自动搜索名为create/make_app的方法
 # 以后调用flask的current_app方法会返回app代理实例
@@ -35,6 +39,7 @@ def create_app(config_name=None):
 
 
 def register_extensions(app):
+    login_manager.init_app(app)
     bootstrap.init_app(app)
     db.init_app(app)
     mail.init_app(app)
@@ -43,6 +48,8 @@ def register_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(user_bp)
 
 
 def register_shell_context(app):
@@ -109,6 +116,17 @@ def register_commands(app):
         click.echo('Done.')
 
     @app.cli.command()
-    def forge():
+    @click.option('--user', default=10, help='Quantity of users, default is 10.')
+    def forge(user):
         """Generate fake data."""
-        pass
+
+        from noirart.fakes import fake_admin, fake_user
+
+        db.drop_all()
+        db.create_all()
+
+        click.echo('Generating the administrator...')
+        fake_admin()
+        click.echo('Generating %d users...' % user)
+        fake_user(user)
+        click.echo('Done.')

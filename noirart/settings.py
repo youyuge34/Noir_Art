@@ -11,6 +11,12 @@ else:
     prefix = 'sqlite:////'
 
 
+class Operations:
+    CONFIRM = 'confirm'
+    RESET_PASSWORD = 'reset-password'
+    CHANGE_EMAIL = 'change-email'
+
+
 class BaseConfig:
     NOIR_ADMIN_EMAIL = os.getenv('NOIR_ADMIN', 'admin@noirart.com')
     NOIR_PHOTO_PER_PAGE = 12

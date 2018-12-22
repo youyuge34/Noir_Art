@@ -29,6 +29,8 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarColor01">
+
+                <!-- 导航栏左侧元素 -->
                 <div class="navbar-nav mr-auto">
                     {{ render_nav_item('main.index', 'Home') }}
                     {{ render_nav_item('main.explore', 'Explore') }}
@@ -40,6 +42,29 @@
                         </button>
                     </form>
                 </div>
+
+                <!-- 导航栏右侧，判断是否登陆显示不同元素 -->
+                <div class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <div class="dropdown nav-item">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-expanded="false">
+                            {{ current_user.name }}<span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <a href="{{ url_for('user.index', username=current_user.username)}}" class="dropdown-header">Logged as {{ current_user.username }}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <span class="oi oi-power-standby"></span> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;
+                    <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Join Noir</a>
+                {% endif %}
+                </div>
+
             </div>
         </div>
     </nav>
