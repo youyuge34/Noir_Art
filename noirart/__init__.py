@@ -8,7 +8,7 @@ from noirart.blueprints.auth import auth_bp
 from noirart.blueprints.main import main_bp
 from noirart.blueprints.user import user_bp
 from noirart.extensions import bootstrap, db, mail, moment, login_manager
-from noirart.models import User  # 导入之后db才能识别到，create的时候才会自动建表
+from noirart.models import Role, User, Permission  # 导入之后db才能识别到，create的时候才会自动建表
 from noirart.settings import config
 
 
@@ -109,9 +109,12 @@ def register_commands(app):
 
     @app.cli.command()
     def init():
-        """Initialize NoirArt."""
+        """Initialize NoirArt. 运行程序前没forge咋办？用这个方法初始化角色权限数据库"""
         click.echo('Initializing the database...')
         db.create_all()
+
+        click.echo('Initializing the roles and permissions...')
+        Role.init_role()
 
         click.echo('Done.')
 
@@ -124,7 +127,8 @@ def register_commands(app):
 
         db.drop_all()
         db.create_all()
-
+        click.echo('Initializing the roles and permissions...')
+        Role.init_role()
         click.echo('Generating the administrator...')
         fake_admin()
         click.echo('Generating %d users...' % user)

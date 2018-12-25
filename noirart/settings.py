@@ -18,7 +18,7 @@ class Operations:
 
 
 class BaseConfig:
-    NOIR_ADMIN_EMAIL = os.getenv('NOIR_ADMIN', 'admin@noirart.com')
+    NOIR_ADMIN_EMAIL = os.getenv('NOIR_ADMIN', '1197993367@qq.com')
     NOIR_PHOTO_PER_PAGE = 12
     NOIR_COMMENT_PER_PAGE = 15
     NOIR_NOTIFICATION_PER_PAGE = 20

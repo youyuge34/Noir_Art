@@ -1,5 +1,5 @@
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager
+from flask_login import LoginManager, AnonymousUserMixin
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -33,3 +33,19 @@ AnonymousUserMixin类对象， 它的is_authenticated和is_active属性会返
 login_manager.login_view = 'auth.login'
 # login_manager.login_message = 'Your custom message'
 login_manager.login_message_category = 'warning'
+
+
+class Guest(AnonymousUserMixin):
+    '''
+    为了让current_app都有can 和 is_admin 方法，重写访客登陆时的匿名类
+    '''
+
+    def can(self, permission_name):
+        return False
+
+    @property
+    def is_admin(self):
+        return False
+
+
+login_manager.anonymous_user = Guest
