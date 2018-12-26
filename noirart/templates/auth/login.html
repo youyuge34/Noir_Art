@@ -4,13 +4,18 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    <div class="jumbotron">
-        <div class="row">
+    <div class="jumbotron jumbotron-trans" >
+        <div class="row" >
+
             <div class="col-md-8">
+
                 <img src="{{ url_for('static', filename='images/index.png') }}" class="rounded img-fluid">
             </div>
+
             <div class="col-md-4">
-                <div class="card mb-3 w-100 bg-light">
+
+                <div class="card mb-3 w-100 bg-light" style="opacity: 0.9">
+
                     <div class="card-header"><h4>Log in to Noir Art</h4></div>
                     <div class="card-body">
                         {{ render_form(form) }}

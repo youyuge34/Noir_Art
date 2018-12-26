@@ -3,13 +3,16 @@ from flask_login import LoginManager, AnonymousUserMixin
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_dropzone import Dropzone
+from flask_wtf import CSRFProtect
 
-
+dropzone = Dropzone()
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 login_manager = LoginManager()
 mail = Mail()
 moment = Moment()
+csrf = CSRFProtect()
 
 
 # 在每一个模板中都可以使用 current_user

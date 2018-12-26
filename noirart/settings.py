@@ -31,6 +31,7 @@ class BaseConfig:
     NOIR_MAIL_SUBJECT_PREFIX = '[Noir]'
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
+    # flask内置服务器端验证
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024  # file size exceed to 3 Mb will return a 413 error response.
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -42,6 +43,19 @@ class BaseConfig:
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ('Noir Admin', MAIL_USERNAME)
 
+    NOIR_UPLOAD_PATH = os.path.join(basedir, 'uploads')
+    NOIR_PHOTO_SIZE = {'small': 400,
+                         'medium': 800}
+    NOIR_PHOTO_SUFFIX = {
+        NOIR_PHOTO_SIZE['small']: '_s',  # thumbnail
+        NOIR_PHOTO_SIZE['medium']: '_m',  # display
+    }
+
+    # dropzone参数
+    DROPZONE_ALLOWED_FILE_TYPE = 'image'
+    DROPZONE_MAX_FILE_SIZE = 3
+    DROPZONE_MAX_FILES = 30
+    DROPZONE_ENABLE_CSRF = True
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = \

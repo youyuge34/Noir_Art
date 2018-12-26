@@ -3,6 +3,7 @@ from functools import wraps
 from flask import Markup, flash, url_for, redirect, abort
 from flask_login import current_user
 
+
 # 带参数的装饰器定义函数
 def permission_required(permission_name):
     def decorator(func):

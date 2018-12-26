@@ -7,8 +7,8 @@ from flask import Flask, render_template
 from noirart.blueprints.auth import auth_bp
 from noirart.blueprints.main import main_bp
 from noirart.blueprints.user import user_bp
-from noirart.extensions import bootstrap, db, mail, moment, login_manager
-from noirart.models import Role, User, Permission  # 导入之后db才能识别到，create的时候才会自动建表
+from noirart.extensions import bootstrap, db, mail, moment, login_manager, dropzone, csrf
+from noirart.models import Role, User, Photo, Permission  # 导入之后db才能识别到，create的时候才会自动建表
 from noirart.settings import config
 
 
@@ -44,6 +44,8 @@ def register_extensions(app):
     db.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    dropzone.init_app(app)
+    csrf.init_app(app)
 
 
 def register_blueprints(app):
@@ -60,7 +62,7 @@ def register_shell_context(app):
     '''
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db)
+        return dict(db=db, User=User, )
 
 
 def register_template_context(app):

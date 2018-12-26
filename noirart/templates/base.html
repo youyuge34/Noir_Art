@@ -18,7 +18,7 @@
 
 <body>
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-light " style="background: rgba(222,222,222,0.6)" >
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
                 <img src="{{ url_for('static', filename='n.png') }}" alt="NoirArt">
@@ -46,6 +46,9 @@
                 <!-- 导航栏右侧，判断是否登陆显示不同元素 -->
                 <div class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{{ url_for('main.upload') }}" title="Upload">
+                        <span class="oi oi-cloud-upload" ></span>&nbsp;&nbsp;
+                    </a>
                     <div class="dropdown nav-item">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-expanded="false">
@@ -60,7 +63,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;
+                    <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;
                     <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Join Noir</a>
                 {% endif %}
                 </div>
@@ -78,16 +81,21 @@
                 {{ message[1] }}
             </div>
         {% endfor %}
+        <video id="video-back" autoplay muted loop>
+            <source  src="{{ url_for('static', filename='videos/bkv2.mp4') }}" type="video/mp4">
+        </video>
         {% block content %}{% endblock %}
         {% block footer %}
             <footer>
                 <p class="float-left">
-                    <small>&copy; 2018
-                        <a href="https://github.com/youyuge34" title="Written by us">Leader</a> -
+                    <small>
+                    &copy; 2018
+                        <a href="https://github.com/youyuge34/Noir_Art" title="Written by us">Leader</a> -
                         <a href="https://github.com/youyuge34" title="Fork me on GitHub">GitHub</a> -
-                        <a href="/" title="敏捷软件开发大作业">Team:敏捷工程不敏捷</a>
+                        <a href="#" title="敏捷软件开发大作业">Team:敏捷工程不敏捷</a>
                     </small>
                 </p>
+
                 <p class="float-right">
                     <small>Share your design and f**k the life with us.</small>
                 </p>

@@ -69,8 +69,10 @@ class User(db.Model, UserMixin):
     # 外键是角色类型，每种类型对应不同权限
     # 每个User对应一种role，每种role对应多个权限
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-
     role = db.relationship('Role', back_populates='users')
+
+    # 级联设为all，删除user时删除所有它的照片
+    photos = db.relationship('Photo', back_populates='author', cascade='all')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -91,6 +93,7 @@ class User(db.Model, UserMixin):
 
     def can(self, permission_name):
         '''
+        权限查看语句：User.role(角色).permissions
         :param permission_name: 权限名称
         :return: 是否拥有此权限
         '''
@@ -102,3 +105,18 @@ class User(db.Model, UserMixin):
 
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+# User模型和Photo模型是一对多关系
+# User.query.first().photos[0].filename
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(500))
+    filename = db.Column(db.String(64))
+    filename_s = db.Column(db.String(64))
+    filename_m = db.Column(db.String(64))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)  # upload time
+    # 外键
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    author = db.relationship('User', back_populates='photos')
