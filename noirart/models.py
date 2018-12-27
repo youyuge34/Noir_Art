@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import os
 from flask import current_app
 from flask_avatars import Identicon
 from flask_login import UserMixin
@@ -77,6 +77,7 @@ class User(db.Model, UserMixin):
 
     # 级联设为all，删除user时删除所有它的照片
     photos = db.relationship('Photo', back_populates='author', cascade='all')
+    comments = db.relationship('Comment', back_populates='author', cascade='all')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -121,6 +122,13 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
 
+# Photo和tag多对多关系
+tagging = db.Table('tagging',
+                   db.Column('photo_id', db.Integer, db.ForeignKey('photo.id')),
+                   db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
+                   )
+
+
 # User模型和Photo模型是一对多关系
 # User.query.first().photos[0].filename
 class Photo(db.Model):
@@ -134,3 +142,43 @@ class Photo(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     author = db.relationship('User', back_populates='photos')
+
+    can_comment = db.Column(db.Boolean, default=True)
+    flag = db.Column(db.Integer, default=0)
+    comments = db.relationship('Comment', back_populates='photo', cascade='all')
+    tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=True)
+
+    photos = db.relationship('Photo', secondary=tagging, back_populates='tags')
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    flag = db.Column(db.Integer, default=0)
+
+    replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    photo_id = db.Column(db.Integer, db.ForeignKey('photo.id'))
+
+    photo = db.relationship('Photo', back_populates='comments')
+    author = db.relationship('User', back_populates='comments')
+    replies = db.relationship('Comment', back_populates='replied', cascade='all')
+    replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+
+
+# 为了避免重复这部分代码， 我们为Photo创建
+# 一个数据库事件监听函数。 这个监听函数的作用是， 当Photo记录被删
+# 除时， 自动删除对应的文件
+@db.event.listens_for(Photo, 'after_delete', named=True)
+def delete_photos(**kwargs):
+    target = kwargs['target']
+    for filename in [target.filename, target.filename_s, target.filename_m]:
+        path = os.path.join(current_app.config['NOIR_UPLOAD_PATH'], filename)
+        if os.path.exists(path):  # not every filename map a unique file
+            os.remove(path)

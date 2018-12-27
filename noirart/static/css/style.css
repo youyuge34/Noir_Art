@@ -20,6 +20,7 @@
 
 .user-nav {
     margin: 30px 0 20px;
+
 }
 
 .dead-link {
@@ -89,9 +90,11 @@ footer {
 /* list item */
 .photo-card {
     float: left;
-    width: 33.333%;
+    width: 28%;
+    margin: 15px;
     padding: 0.5rem 0.5rem 0 0.5rem;
     border: 0;
+    /*background-color: rgba(200,200,200,0.7);*/
 }
 
 .photo-card .card-body {
@@ -381,7 +384,53 @@ z-index: 0;
 }
 
 h1 {
-    color: rgba(230,230,230,0.8)
+    color: rgba(230,230,230,0.86)
+}
+
+h2 {
+    color: rgba(230,230,230,0.86)
+}
+h3 {
+    color: rgba(230,230,230,0.86)
+}
+h4 {
+    color: rgba(230,230,230,0.86)
+}
+h5 {
+    color: rgba(230,230,230,0.86)
+}
+p {
+    color: rgba(230,230,230,0.86)
+}
+div {
+    color: rgba(230,230,230,0.86)
+}
+
+
+.whiter {
+    color: rgba(230,230,230,0.86)
+}
+
+.card-transparent {
+    /*opacity: 0.8;*/
+    background: rgba(3,54,73,0.5)  !important;
+}
+
+.card-transparent-20 {
+    /*opacity: 0.8;*/
+    background: rgba(3,54,73,0.2)  !important;
+}
+.card-transparent-10 {
+    /*opacity: 0.8;*/
+    background: rgba(3,54,73,0.1)  !important;
+}
+.card-transparent-30 {
+    /*opacity: 0.8;*/
+    background: rgba(3,54,73,0.3)  !important;
+}
+.card-transparent-40 {
+    /*opacity: 0.8;*/
+    background: rgba(3,54,73,0.4)  !important;
 }
 
 .gradient{

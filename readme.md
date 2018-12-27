@@ -57,3 +57,8 @@
 1. `base.html`页面中先从`cookies`中获取参数（默认`video`），加载对应标签元素
 2. `base.html`页面的导航栏item中写背景开关，用`checkbox`,默认`checked`,`onclick()`中写JS函数回调，点击后JS会传`checkbox`的状态参数到 0 step中的视图函数
 3. `base.html`页面最后写`jQuery`函数，根据`cookies`中参数设定改变对应的`checkbox`状态,必须要声明在`script.js`文件后面，不然函数还没加载到
+
+------
+
+#### **v0.6**     
+**`User`页面，`Photo`详情页面编写完毕**
