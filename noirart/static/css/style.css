@@ -359,6 +359,29 @@ z-index: 0;
     z-index: -1;
 }
 
+.my-navbar {
+    transition: background 0.3s ease-in-out, padding 0.3s ease-in-out;
+
+}
+
+
+.top-nav {
+    background:rgba(3,54,73,0.7)
+}
+
 .jumbotron-trans {
     background: rgba(233,236,239,0)
+}
+
+h1 {
+    color: rgba(230,230,230,0.8)
+}
+
+.gradient{
+    background: -moz-linear-gradient(top, rgba(100,100,100,0.8), rgba(100,100,100,0));
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#000000), color-stop(100%,#ffffff));
+    background: -webkit-linear-gradient(top, rgba(100,100,100,0.8), rgba(100,100,100,0));
+    background: -o-linear-gradient(top, rgba(100,100,100,0.8),rgba(100,100,100,0));
+    background: -ms-linear-gradient(top, rgba(100,100,100,0.8),rgba(100,100,100,0));
+    background: linear-gradient(to bottom, rgba(75,75,75,0.8),rgba(100,100,100,0));
 }

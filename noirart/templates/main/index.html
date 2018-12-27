@@ -9,7 +9,7 @@
                 <img src="{{ url_for('static', filename='images/index3.png') }}" class="rounded img-fluid">
             </div>
             <div class="col-md-4 align-self-center">
-                <h1 style="color: rgba(230,230,230,0.8)">NoirArt</h1>
+                <h1>NoirArt</h1>
                 <p style="color: rgba(210,210,210,0.8)">One for all, all for one. Share your design!</p>
                 {% if current_user.is_authenticated %}
                 <p>Hello,{{current_user.username}}!</p>

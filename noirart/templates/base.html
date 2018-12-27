@@ -18,7 +18,7 @@
 
 <body>
 {% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light " style="background: rgba(222,222,222,0.6)" >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top my-navbar" >
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
                 <img src="{{ url_for('static', filename='n.png') }}" alt="NoirArt">
@@ -73,7 +73,7 @@
     </nav>
 {% endblock %}
 
-<main>
+<main style="margin-top: 60px">
     <div class="container">
         {% for message in get_flashed_messages(with_categories=True) %}
             <div class="alert alert-{{ message[0] }}">
@@ -105,11 +105,20 @@
 </main>
 
 {% block scripts %}
+
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+ <script>
+        $(window).scroll(function () {
+            if ($(".navbar").offset().top > 60) {
+                $(".navbar").removeClass('bg-transparent');
+                $(".navbar").addClass("top-nav");
+            }else {$(".fixed-top").removeClass("bg-top-nav");
+            $(".fixed-top").addClass("bg-transparent")}
+        })</script>
 {% endblock %}
 </body>
 </html>
