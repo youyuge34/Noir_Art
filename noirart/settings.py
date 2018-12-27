@@ -60,6 +60,10 @@ class BaseConfig:
     # 背景参数
     NOIR_THEMES = {'video': 'Video', 'photo': 'Photo'}
 
+    # 默认头像参数
+    AVATARS_SAVE_PATH = os.path.join(NOIR_UPLOAD_PATH, 'avatars')
+    AVATARS_SIZE_TUPLE = (30, 100, 200)  # 三种尺寸的头像图片大小
+
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = \
         prefix + os.path.join(basedir, 'data-dev.db')

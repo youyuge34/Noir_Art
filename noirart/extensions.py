@@ -5,6 +5,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_dropzone import Dropzone
 from flask_wtf import CSRFProtect
+from flask_avatars import Avatars
 
 dropzone = Dropzone()
 bootstrap = Bootstrap()
@@ -13,6 +14,7 @@ login_manager = LoginManager()
 mail = Mail()
 moment = Moment()
 csrf = CSRFProtect()
+avatars = Avatars()
 
 
 # 在每一个模板中都可以使用 current_user

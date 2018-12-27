@@ -1,6 +1,6 @@
 
 import os
-from flask import render_template, Blueprint, request, current_app, abort, make_response
+from flask import render_template, Blueprint, request, current_app, abort, make_response, send_from_directory
 from flask_login import login_required, current_user
 from noirart.extensions import db
 from noirart.models import Photo
@@ -20,6 +20,13 @@ def index():
 @main_bp.route('/explore')
 def explore():
     return render_template('main/explore.html')
+
+
+# Flask-Avatars的要求， 我们需要创建一个类似Flask内置的static视图的视图函数
+# 获取小头像:<img src="{{ url_for('main.get_avatar', filename=current_user.avatar_s) }}">
+@main_bp.route('/avatars/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
 
 @main_bp.route('/upload', methods=['GET', 'POST'])
