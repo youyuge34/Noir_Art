@@ -41,9 +41,9 @@
                                 </button>
                                 <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 {% if current_user != comment.author %}
-                                    <a class="dropdown-item btn"
+                                    <a class="dropdown-item"
                                        href="{{ url_for('.reply_comment', comment_id=comment.id) }}">
-                                    <span class="oi oi-comment-square"></span> Reply
+                                    <span class="oi oi-comment-square" aria-hidden="true"></span> Reply
                                 </a>
                                 {% endif %}
                                     {% if current_user == comment.author or current_user == photo.author %}
@@ -99,7 +99,7 @@
                              src="{{ url_for('main.get_avatar', filename=current_user.avatar_m) }}">
                     </div>
                     <div class="comment-form" id="comment-form">
-                        {{ render_form(comment_form, action=url_for('.new_comment', photo_id=photo.id, page=pagination.pages),
+                        {{ render_form(comment_form, action=url_for('.new_comment', photo_id=photo.id, page=pagination.pages, reply=request.args.get('reply')),
                         extra_classes="text-right") }}
                     </div>
                 </div>
