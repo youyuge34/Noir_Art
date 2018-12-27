@@ -57,6 +57,9 @@ class BaseConfig:
     DROPZONE_MAX_FILES = 30
     DROPZONE_ENABLE_CSRF = True
 
+    # 背景参数
+    NOIR_THEMES = {'video': 'Video', 'photo': 'Photo'}
+
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = \
         prefix + os.path.join(basedir, 'data-dev.db')

@@ -1,10 +1,10 @@
 
 import os
-from flask import render_template, Blueprint, request, current_app
+from flask import render_template, Blueprint, request, current_app, abort, make_response
 from flask_login import login_required, current_user
 from noirart.extensions import db
 from noirart.models import Photo
-from noirart.utils import rename_image, resize_image
+from noirart.utils import rename_image, resize_image, redirect_back
 
 from noirart.decorators import permission_required
 
@@ -41,3 +41,14 @@ def upload():
         db.session.add(photo)
         db.session.commit()
     return render_template('main/upload.html')
+
+
+@main_bp.route('/change-theme/<theme_name>')
+def change_theme(theme_name):
+    if theme_name not in current_app.config['NOIR_THEMES'].keys():
+        abort(404)
+
+    response = make_response(redirect_back())
+    response.set_cookie('theme', theme_name, max_age=30 * 24 * 60 * 60)
+    return response
+

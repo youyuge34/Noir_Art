@@ -45,6 +45,7 @@
 
                 <!-- 导航栏右侧，判断是否登陆显示不同元素 -->
                 <div class="navbar-nav ml-auto">
+
                 {% if current_user.is_authenticated %}
                     <a class="nav-item nav-link" href="{{ url_for('main.upload') }}" title="Upload">
                         <span class="oi oi-cloud-upload" ></span>&nbsp;&nbsp;
@@ -57,9 +58,16 @@
                         <div class="dropdown-menu dropdown-menu-right" role="menu">
                             <a href="{{ url_for('user.index', username=current_user.username)}}" class="dropdown-header">Logged as {{ current_user.username }}</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="bgCheck" onclick="checkboxOnclick(this)">
+                                    <label class="custom-control-label" for="bgCheck">Dynamic BG</label>
+                                </div>
+                            </a>
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                 <span class="oi oi-power-standby"></span> Logout
                             </a>
+
                         </div>
                     </div>
                 {% else %}
@@ -81,22 +89,36 @@
                 {{ message[1] }}
             </div>
         {% endfor %}
+
+        <!--填充背景：视频或者图片-->
+        {% if request.cookies.get('theme', 'video') == 'video' %}
         <video id="video-back" autoplay muted loop>
             <source  src="{{ url_for('static', filename='videos/bkv2.mp4') }}" type="video/mp4">
         </video>
+        {% else %}
+        <img id="photo-back" src="{{ url_for('static', filename='images/bk.jpg') }}">
+
+
+        {% endif %}
+
         {% block content %}{% endblock %}
         {% block footer %}
             <footer>
                 <p class="float-left">
                     <small>
                     &copy; 2018
-                        <a href="https://github.com/youyuge34/Noir_Art" title="Written by us">Leader</a> -
-                        <a href="https://github.com/youyuge34" title="Fork me on GitHub">GitHub</a> -
+                        <a href="https://github.com/youyuge34" target="_blank" title="Written by us">Leader</a> -
+                        <a href="https://github.com/youyuge34/Noir_Art" target="_blank" title="Fork me on GitHub">GitHub</a> -
                         <a href="#" title="敏捷软件开发大作业">Team:敏捷工程不敏捷</a>
                     </small>
+
+                </p>
+                <p class="m-auto">
+
                 </p>
 
                 <p class="float-right">
+
                     <small>Share your design and f**k the life with us.</small>
                 </p>
             </footer>
@@ -111,14 +133,13 @@
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     {{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
- <script>
-        $(window).scroll(function () {
-            if ($(".navbar").offset().top > 60) {
-                $(".navbar").removeClass('bg-transparent');
-                $(".navbar").addClass("top-nav");
-            }else {$(".fixed-top").removeClass("bg-top-nav");
-            $(".fixed-top").addClass("bg-transparent")}
-        })</script>
+
+    {% if request.cookies.get('theme', 'video') == 'video' %}
+        <!--加载了对应的js之后才能执行里面的函数！-->
+        <script> setCheckbox('video')</script>
+        {% else %}
+        <script> setCheckbox('photo')</script>
+        {% endif %}
 {% endblock %}
 </body>
 </html>

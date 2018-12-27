@@ -359,9 +359,16 @@ z-index: 0;
     z-index: -1;
 }
 
-.my-navbar {
-    transition: background 0.3s ease-in-out, padding 0.3s ease-in-out;
+#photo-back {
+    left: 0; top: 0; right: 0;bottom: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: -1;
+}
 
+.my-navbar {
+    transition: background 0.2s ease-in-out;
 }
 
 
