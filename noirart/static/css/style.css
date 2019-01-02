@@ -313,43 +313,7 @@ footer {
       /*height: 100%;*/
       /*overflow: hidden;*/
     /*}*/
-    #container {
 
-    }
-    #background_video {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      object-fit: cover;
-      height: 80%; width: 60%;
-z-index: 0;
-    }
-    #video_cover {
-      position: absolute;
-      width: 100%; height: 100%;
-      background: url('../images/video_cover.jpeg') no-repeat;
-      background-size: cover;
-      background-position: center;
-    }
-    #video_controls {
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, 0);
-    }
-    #play img {
-      width: 100px;
-    }
-    #pause img {
-      width: 90px;
-    }
-    #pause {
-      display: none;
-    }
-    @media (min-width: 768px) {
-      #video_controls {
-        display: none;
-      }
-    }
 
 #video-back {
     position: fixed;
@@ -440,4 +404,22 @@ h5 {
     background: -o-linear-gradient(top, rgba(100,100,100,0.8),rgba(100,100,100,0));
     background: -ms-linear-gradient(top, rgba(100,100,100,0.8),rgba(100,100,100,0));
     background: linear-gradient(to bottom, rgba(75,75,75,0.8),rgba(100,100,100,0));
+}
+
+
+/*弹窗设置样式， 主要的作用是将其默认*/
+/*设为隐藏， 并将其设置在页面下方居中显示*/
+#toast { /* form w3school.com */
+    display: none;
+    min-width: 200px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
 }
