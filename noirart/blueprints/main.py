@@ -9,6 +9,7 @@ from noirart.models import Photo, Comment, Tag
 from noirart.utils import rename_image, resize_image, redirect_back, flash_errors
 
 from noirart.decorators import permission_required
+from sqlalchemy.sql.expression import func
 
 # create main page blueprint
 main_bp = Blueprint('main', __name__)
@@ -21,7 +22,9 @@ def index():
 
 @main_bp.route('/explore')
 def explore():
-    return render_template('main/explore.html')
+    photos = Photo.query.order_by(func.random()).limit(12)
+    return render_template('main/explore.html', photos=photos)
+
 
 
 # Flask-Avatars的要求， 我们需要创建一个类似Flask内置的static视图的视图函数
@@ -195,7 +198,7 @@ def new_tag(photo_id):
     return redirect(url_for('.show_photo', photo_id=photo_id))
 
 
-@main_bp.route('/set-comment/<int:photo_id>', methods=['POST'])
+@main_bp.route('/set-comment/<int:photo_id>')
 @login_required
 def set_comment(photo_id):
     photo = Photo.query.get_or_404(photo_id)
