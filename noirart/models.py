@@ -20,6 +20,16 @@ class Permission(db.Model):
     # secondary 表示多对多关系
     roles = db.relationship('Role', secondary=roles_permissions, back_populates='permissions')
 
+# relationship object
+class Collect(db.Model):
+    collector_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                             primary_key=True)
+    collected_id = db.Column(db.Integer, db.ForeignKey('photo.id'),
+                             primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    collector = db.relationship('User', back_populates='collections', lazy='joined')
+    collected = db.relationship('Photo', back_populates='collectors', lazy='joined')
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -79,6 +89,8 @@ class User(db.Model, UserMixin):
     photos = db.relationship('Photo', back_populates='author', cascade='all')
     comments = db.relationship('Comment', back_populates='author', cascade='all')
 
+    collections = db.relationship('Collect', back_populates='collector', cascade='all')
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.set_role()
@@ -121,6 +133,20 @@ class User(db.Model, UserMixin):
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def collect(self, photo):
+        if not self.is_collecting(photo):
+            collect = Collect(collector=self, collected=photo)
+            db.session.add(collect)
+            db.session.commit()
+
+    def uncollect(self, photo):
+        collect = Collect.query.with_parent(self).filter_by(collected_id=photo.id).first()
+        if collect:
+            db.session.delete(collect)
+            db.session.commit()
+
+    def is_collecting(self, photo):
+        return Collect.query.with_parent(self).filter_by(collected_id=photo.id).first() is not None
 
 # Photo和tag多对多关系
 tagging = db.Table('tagging',
@@ -147,6 +173,8 @@ class Photo(db.Model):
     flag = db.Column(db.Integer, default=0)
     comments = db.relationship('Comment', back_populates='photo', cascade='all')
     tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
+
+    collectors = db.relationship('Collect', back_populates='collected', cascade='all')
 
 
 class Tag(db.Model):

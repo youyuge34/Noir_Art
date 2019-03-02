@@ -1,11 +1,10 @@
-
 import os
 from flask import render_template, Blueprint, request, current_app, abort, make_response, send_from_directory, flash, \
     redirect, url_for
 from flask_login import login_required, current_user
 from noirart.extensions import db
 from noirart.forms.main import DescriptionForm, TagForm, CommentForm
-from noirart.models import Photo, Comment, Tag
+from noirart.models import Photo, Comment, Tag, Collect
 from noirart.utils import rename_image, resize_image, redirect_back, flash_errors
 
 from noirart.decorators import permission_required
@@ -24,7 +23,6 @@ def index():
 def explore():
     photos = Photo.query.order_by(func.random()).limit(12)
     return render_template('main/explore.html', photos=photos)
-
 
 
 # Flask-Avatars的要求， 我们需要创建一个类似Flask内置的static视图的视图函数
@@ -223,6 +221,43 @@ def reply_comment(comment_id):
     return redirect(
         url_for('.show_photo', photo_id=comment.photo_id, reply=comment_id,
                 author=comment.author.name) + '#comment-form')
+
+
+@main_bp.route('/collect/<int:photo_id>', methods=['POST'])
+@login_required
+@permission_required('COLLECT')
+def collect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if current_user.is_collecting(photo):
+        flash('Already collected.', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo_id))
+
+    current_user.collect(photo)
+    flash('Photo collected.', 'success')
+    return redirect(url_for('.show_photo', photo_id=photo_id))
+
+
+@main_bp.route('/uncollect/<int:photo_id>', methods=['POST'])
+@login_required
+def uncollect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if not current_user.is_collecting(photo):
+        flash('Not collect yet.', 'info')
+        return redirect(url_for('main.show_photo', photo_id=photo_id))
+
+    current_user.uncollect(photo)
+    flash('Photo uncollected.', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo_id))
+
+
+@main_bp.route('/photo/<int:photo_id>/collectors')
+def show_collectors(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['NOIR_USER_PER_PAGE']
+    pagination = Collect.query.with_parent(photo).order_by(Collect.timestamp.asc()).paginate(page, per_page)
+    collects = pagination.items
+    return render_template('main/collectors.html', collects=collects, photo=photo, pagination=pagination)
 
 
 @main_bp.route('/delete/photo/<int:photo_id>', methods=['POST'])

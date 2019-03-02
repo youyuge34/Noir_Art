@@ -9,7 +9,7 @@ from noirart.blueprints.main import main_bp
 from noirart.blueprints.user import user_bp
 from noirart.blueprints.ajax import ajax_bp
 from noirart.extensions import bootstrap, db, mail, moment, login_manager, dropzone, csrf, avatars
-from noirart.models import Role, User, Photo, Permission, Photo, Comment, Tag  # 导入之后db才能识别到，create的时候才会自动建表
+from noirart.models import Role, User, Collect, Photo, Permission, Photo, Comment, Tag  # 导入之后db才能识别到，create的时候才会自动建表
 from noirart.settings import config
 
 
@@ -65,7 +65,7 @@ def register_shell_context(app):
     '''
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db, User=User, )
+        return dict(db=db, User=User, Photo=Photo, Tag=Tag, Collect=Collect, Comment=Comment)
 
 
 def register_template_context(app):
