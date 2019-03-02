@@ -120,9 +120,28 @@ $(function () {
 
     $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')})
 
+    // 轮询推送
+    if (is_authenticated) {
+        setInterval(update_notifications_count, 30000);
+    }
+
 });
 
-
+function update_notifications_count() {
+    var $el = $('#notification-badge');
+    $.ajax({
+        type: 'GET',
+        url: $el.data('href'),
+        success: function (data) {
+            if (data.count === 0) {
+                $('#notification-badge').hide();
+            } else {
+                $el.show();
+                $el.text(data.count)
+            }
+        }
+    });
+}
 
 
 

@@ -114,6 +114,7 @@ class User(db.Model, UserMixin):
                                 lazy='dynamic', cascade='all')
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
                                 lazy='dynamic', cascade='all')
+    notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -244,6 +245,17 @@ class Comment(db.Model):
     author = db.relationship('User', back_populates='comments')
     replies = db.relationship('Comment', back_populates='replied', cascade='all')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    receiver = db.relationship('User', back_populates='notifications')
 
 
 # 为了避免重复这部分代码， 我们为Photo创建

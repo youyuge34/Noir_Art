@@ -3,13 +3,14 @@ import os
 
 import click
 from flask import Flask, render_template
+from flask_login import current_user
 
 from noirart.blueprints.auth import auth_bp
 from noirart.blueprints.main import main_bp
 from noirart.blueprints.user import user_bp
 from noirart.blueprints.ajax import ajax_bp
 from noirart.extensions import bootstrap, db, mail, moment, login_manager, dropzone, csrf, avatars
-from noirart.models import Role, User, Collect, Photo, Permission, Photo, Comment, Tag  # 导入之后db才能识别到，create的时候才会自动建表
+from noirart.models import Role, User, Collect, Photo, Permission, Photo, Comment, Tag, Notification  # 导入之后db才能识别到，create的时候才会自动建表
 from noirart.settings import config
 
 
@@ -65,7 +66,7 @@ def register_shell_context(app):
     '''
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db, User=User, Photo=Photo, Tag=Tag, Collect=Collect, Comment=Comment)
+        return dict(db=db, User=User, Photo=Photo, Tag=Tag, Collect=Collect, Comment=Comment, Notification=Notification)
 
 
 def register_template_context(app):
@@ -74,7 +75,14 @@ def register_template_context(app):
     :param app:
     :return:
     '''
-    pass
+
+    @app.context_processor
+    def make_template_context():
+        if current_user.is_authenticated:
+            notification_count = Notification.query.with_parent(current_user).filter_by(is_read=False).count()
+        else:
+            notification_count = None
+        return dict(notification_count=notification_count)
 
 
 def register_errorhandlers(app):

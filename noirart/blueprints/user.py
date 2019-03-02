@@ -1,9 +1,11 @@
 from flask_login import login_required, current_user
 from flask import render_template, flash, redirect, url_for, current_app, request, Blueprint
 
-from noirart.decorators import  permission_required
+from noirart.decorators import permission_required
 from noirart.models import User, Photo, Collect
+from noirart.notifications import push_follow_notification
 from noirart.utils import redirect_back
+
 user_bp = Blueprint('user', __name__)
 
 
@@ -39,6 +41,8 @@ def follow(username):
 
     current_user.follow(user)
     flash('User followed.', 'success')
+    # 推送新粉丝消息
+    push_follow_notification(follower=current_user, receiver=user)
     return redirect_back()
 
 
