@@ -180,12 +180,14 @@ class User(db.Model, UserMixin):
         return self.followers.filter_by(follower_id=user.id).first() is not None
 
     def collect(self, photo):
+        # print('User model: collect()----->')
         if not self.is_collecting(photo):
             collect = Collect(collector=self, collected=photo)
             db.session.add(collect)
             db.session.commit()
 
     def uncollect(self, photo):
+        # print('User model: uncollect()----->')
         collect = Collect.query.with_parent(self).filter_by(collected_id=photo.id).first()
         if collect:
             db.session.delete(collect)
@@ -194,6 +196,9 @@ class User(db.Model, UserMixin):
     def is_collecting(self, photo):
         return Collect.query.with_parent(self).filter_by(collected_id=photo.id).first() is not None
 
+    @property
+    def followed_photos(self):
+        return Photo.query.join(Follow, Follow.followed_id == Photo.author_id).filter(Follow.follower_id == self.id)
 
 # Photo和tag多对多关系
 tagging = db.Table('tagging',

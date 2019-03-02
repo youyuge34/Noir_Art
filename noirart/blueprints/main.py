@@ -4,7 +4,7 @@ from flask import render_template, Blueprint, request, current_app, abort, make_
 from flask_login import login_required, current_user
 from noirart.extensions import db
 from noirart.forms.main import DescriptionForm, TagForm, CommentForm
-from noirart.models import Photo, Comment, Tag, Collect, Notification
+from noirart.models import Photo, Comment, Tag, Collect, Notification, Follow
 from noirart.utils import rename_image, resize_image, redirect_back, flash_errors
 from noirart.notifications import push_comment_notification, push_collect_notification
 
@@ -17,11 +17,26 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return render_template('main/index.html')
+    if current_user.is_authenticated:
+        page = request.args.get('page', 1, type=int)
+        per_page = current_app.config['NOIR_PHOTO_PER_PAGE']
+        pagination = Photo.query \
+            .join(Follow, Follow.followed_id == Photo.author_id) \
+            .filter(Follow.follower_id == current_user.id) \
+            .order_by(Photo.timestamp.desc()) \
+            .paginate(page, per_page)
+        photos = pagination.items
+    else:
+        pagination = None
+        photos = None
+    tags = Tag.query.join(Tag.photos).group_by(Tag.id).order_by(func.count(Photo.id).desc()).limit(10)
+    return render_template('main/index.html', pagination=pagination, photos=photos, tags=tags, Collect=Collect)
 
 
 @main_bp.route('/explore')
 def explore():
+    # print('explore()')
+
     photos = Photo.query.order_by(func.random()).limit(12)
     return render_template('main/explore.html', photos=photos)
 

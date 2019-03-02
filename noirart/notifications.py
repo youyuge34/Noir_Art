@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from flask import url_for
+from flask import url_for, current_app
 
 from noirart.extensions import db
 from noirart.models import Notification
+
 
 # 关注推送
 def push_follow_notification(follower, receiver):
@@ -12,6 +13,7 @@ def push_follow_notification(follower, receiver):
     db.session.add(notification)
     db.session.commit()
 
+
 # 有评论推送
 def push_comment_notification(photo_id, receiver, page=1):
     message = '<a href="%s#comments">This photo</a> has new comment/reply.' % \
@@ -20,8 +22,10 @@ def push_comment_notification(photo_id, receiver, page=1):
     db.session.add(notification)
     db.session.commit()
 
+
 # 收藏推送
 def push_collect_notification(collector, photo_id, receiver):
+    current_app.logger.debug('pushed collect')
     message = 'User <a href="%s">%s</a> collected your <a href="%s">photo</a>' % \
               (url_for('user.index', username=collector.username),
                collector.username,
