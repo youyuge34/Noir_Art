@@ -20,6 +20,7 @@ class Permission(db.Model):
     # secondary 表示多对多关系
     roles = db.relationship('Role', secondary=roles_permissions, back_populates='permissions')
 
+
 # relationship object
 class Collect(db.Model):
     collector_id = db.Column(db.Integer, db.ForeignKey('user.id'),
@@ -31,6 +32,23 @@ class Collect(db.Model):
     collector = db.relationship('User', back_populates='collections', lazy='joined')
     collected = db.relationship('Photo', back_populates='collectors', lazy='joined')
 
+
+# relationship object
+class Follow(db.Model):
+    """
+    follower_id字段存储关注者的id， followed_id存储被关注者的id，
+    而timastamp存储关注动作发生的时间
+    """
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                            primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                            primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    follower = db.relationship('User', foreign_keys=[follower_id], back_populates='following', lazy='joined')
+    followed = db.relationship('User', foreign_keys=[followed_id], back_populates='followers', lazy='joined')
+
+
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), unique=True)
@@ -38,7 +56,7 @@ class Role(db.Model):
     permissions = db.relationship('Permission', secondary=roles_permissions, back_populates='roles')
 
     @staticmethod
-    def init_role():    # 静态方法，程序数据库初始化的时候调用
+    def init_role():  # 静态方法，程序数据库初始化的时候调用
         roles_permissions_map = {
             'Locked': ['FOLLOW', 'COLLECT'],
             'User': ['FOLLOW', 'COLLECT', 'COMMENT', 'UPLOAD'],
@@ -59,6 +77,7 @@ class Role(db.Model):
                     db.session.add(permission)
                 role.permissions.append(permission)
         db.session.commit()
+
 
 class User(db.Model, UserMixin):
     '''
@@ -91,9 +110,15 @@ class User(db.Model, UserMixin):
 
     collections = db.relationship('Collect', back_populates='collector', cascade='all')
 
+    following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
+                                lazy='dynamic', cascade='all')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
+                                lazy='dynamic', cascade='all')
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.set_role()
+        self.follow(self)  # follow self 想刷到自己的动态
         self.set_avatar()
 
     # 类构造时初始化用户角色信息
@@ -133,6 +158,26 @@ class User(db.Model, UserMixin):
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self, followed=user)
+            db.session.add(follow)
+            db.session.commit()
+
+    def unfollow(self, user):
+        follow = self.following.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+            db.session.commit()
+
+    def is_following(self, user):
+        if user.id is None:  # when follow self, user.id will be None
+            return False
+        return self.following.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(follower_id=user.id).first() is not None
+
     def collect(self, photo):
         if not self.is_collecting(photo):
             collect = Collect(collector=self, collected=photo)
@@ -147,6 +192,7 @@ class User(db.Model, UserMixin):
 
     def is_collecting(self, photo):
         return Collect.query.with_parent(self).filter_by(collected_id=photo.id).first() is not None
+
 
 # Photo和tag多对多关系
 tagging = db.Table('tagging',
