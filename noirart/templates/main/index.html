@@ -10,7 +10,7 @@
         <div class="col-md-8">
             {% if photos %}
                 {% for photo in photos %}
-                    <div class="card mb-3 w-100 bg-light">
+                    <div class="card mb-3 w-100 bg-light card-transparent-70">
                         <div class="card-header">
                             <a class="dead-link" href="{{ url_for('user.index', username=photo.author.username) }}">
                                 <img class="rounded img-fluid avatar-s profile-popover"

@@ -180,8 +180,10 @@ $(function () {
                 $el.prev().show();
                 $el.hide();
                 update_collectors_count(id);
+                toast(data.message);
                 // toast('Collected.','none');
-                toast(data.message)
+                // toast($el.data('href'))
+                // toast('Collected:'+id.toString())
             }
         });
     }
@@ -196,7 +198,7 @@ $(function () {
                 $el.next().show();
                 $el.hide();
                 update_collectors_count(id);
-                toast('Uncollected.','none');
+                toast(data.message);
             }
         });
     }

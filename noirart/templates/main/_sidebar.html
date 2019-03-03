@@ -1,4 +1,4 @@
-<div class="card bg-light mb-3 w-100 sidebar-nav">
+<div class="card bg-light mb-3 w-100 sidebar-nav card-transparent-70">
     <div class="card-body">
         <div class="row">
             <a href="{{ url_for('user.index', username=current_user.username) }}">
@@ -20,11 +20,11 @@
         </a>
     </div>
 </div>
-<div class="card bg-light mb-3 w-100">
+<div class="card bg-light mb-3 w-100 card-transparent-70">
     <div class="card-header">Hot Tags</div>
-    <div class="list-group">
+    <div class="list-group card-transparent-70">
         {% for tag in tags %}
-            <a class="list-group-item" href="{{ url_for('.show_tag', tag_id=tag.id) }}">{{ tag.name }}
+            <a class="list-group-item card-transparent-70" href="{{ url_for('.show_tag', tag_id=tag.id) }}">{{ tag.name }}
                 <span class="badge badge-pill">{{ tag.photos|length }}</span>
             </a>
         {% endfor %}

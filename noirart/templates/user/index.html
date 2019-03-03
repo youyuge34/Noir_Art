@@ -13,7 +13,7 @@
                     {{ photo_card(photo) }}
                 {% endfor %}
             {% else %}
-                <div class="tip text-center">
+                <div class="tip text-center card-transparent-40">
                     <h3>No photos.</h3>
                     {% if user == current_user %}
                         <a class="btn btn-link" href="{{ url_for('main.upload') }}">Upload</a>

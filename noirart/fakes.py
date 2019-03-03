@@ -16,6 +16,14 @@ def fake_admin():
                  confirmed=True)
     admin.set_password('123456')
     db.session.add(admin)
+    admin = User(name='tony',
+                 username='tony',
+                 email='tony@qq.com',
+                 bio=fake.sentence(),
+                 website='https://www.github.com/youyuge34',
+                 confirmed=True)
+    admin.set_password('123456')
+    db.session.add(admin)
     db.session.commit()
 
 

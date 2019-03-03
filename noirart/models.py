@@ -99,6 +99,11 @@ class User(db.Model, UserMixin):
     # 默认注册用户都认证了，不用发邮件认证了，学校云服务器没连外网
     confirmed = db.Column(db.Boolean, default=True)
 
+    public_collections = db.Column(db.Boolean, default=True)
+    receive_comment_notification = db.Column(db.Boolean, default=True)
+    receive_follow_notification = db.Column(db.Boolean, default=True)
+    receive_collect_notification = db.Column(db.Boolean, default=True)
+
     # 外键是角色类型，每种类型对应不同权限
     # 每个User对应一种role，每种role对应多个权限
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))

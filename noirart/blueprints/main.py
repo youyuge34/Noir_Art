@@ -285,6 +285,7 @@ def reply_comment(comment_id):
 @login_required
 @permission_required('COLLECT')
 def collect(photo_id):
+    current_app.logger.debug('main.py: collect():---->')
     photo = Photo.query.get_or_404(photo_id)
     if current_user.is_collecting(photo):
         flash('Already collected.', 'info')
